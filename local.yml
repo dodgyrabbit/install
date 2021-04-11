@@ -29,3 +29,8 @@
     snap:
       name: code
       classic: true
+  - name: Install .Net 5.0
+    snap:
+      name: donet-sdk
+      classic: true
+      channel: 5.0
