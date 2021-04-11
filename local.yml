@@ -13,4 +13,16 @@
   tasks:
   - name: install utilities
     package:
-      name: htop
+      name:
+        - htop
+        - curl
+        - gimp
+        - git-gui
+        - meld
+        - nodejs
+        - npm
+        - flameshot
+        - jq
+        - snapd
+        - ffmpeg
+
