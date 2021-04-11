@@ -31,6 +31,6 @@
       classic: true
   - name: Install .Net 5.0
     snap:
-      name: donet-sdk
+      name: dotnet-sdk
       classic: true
-      channel: 5.0
+      channel: "5.0"
