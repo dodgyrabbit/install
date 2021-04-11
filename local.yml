@@ -25,3 +25,7 @@
         - jq
         - snapd
         - ffmpeg
+  - name: Install VS Code
+    snap:
+      name: code
+      classic: true
