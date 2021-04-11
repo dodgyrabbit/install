@@ -1,15 +1,16 @@
-hosts: localhost
-connection: local
-become: true
+---
+- hosts: localhost
+  connection: local
+  become: true
 
-pre_tasks:
-- name: pre-run | update package cache (Debian/Ubuntu)
-  tags: always
-  apt: update_cache=yes
-  changed_when: False
-  when: ansible_distribution in ["Debian", "Ubuntu"]
+  pre_tasks:
+  - name: pre-run | update package cache (Debian/Ubuntu)
+    tags: always
+    apt: update_cache=yes
+    changed_when: false
+    when: ansible_distribution in ["Debian", "Ubuntu"]
 
-tasks:
-- name: install utilities
-  package:
-    name: htop
+  tasks:
+  - name: install utilities
+    package:
+      name: htop
