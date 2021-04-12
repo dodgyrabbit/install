@@ -26,7 +26,6 @@
         - snapd
         - ffmpeg
         - apt-transport-https
-    state: latest
   - name: Install VS Code
     snap:
       name: code
@@ -41,4 +40,4 @@
     apt:
       name: dotnet-sdk-5.0
       state: present
-      update_cache: yes
+      update_cache: true
