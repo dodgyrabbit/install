@@ -41,3 +41,19 @@
       name: dotnet-sdk-5.0
       state: present
       update_cache: true
+  - name: add google public Key
+    apt_key:
+      id: A040830F7FAC5991
+      url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+      state: present
+  - name: add chrome repository
+    apt_repository:
+      repo: "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main"
+      state: present
+      update_cache: true
+  - name: install chrome
+    apt:
+      name: google-chrome-stable
+      state: latest
+      update_cache: true
+      cache_valid_time: 3600
