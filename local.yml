@@ -26,6 +26,7 @@
         - snapd
         - ffmpeg
         - apt-transport-https
+        - kubectl
   - name: Install VS Code
     snap:
       name: code
@@ -57,3 +58,18 @@
       state: latest
       update_cache: true
       cache_valid_time: 3600
+  - name: add google cloud gpg key
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      id: 7F92E05B31093BEF5A3C2D38FEEA9169307EA071
+      keyring: /usr/share/keyrings/cloud.google.gpg
+      state: present      
+  - name: add gcloud repository
+    apt_repository:
+      repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
+      state: present
+      update_cache: true
+  - name: install google cloud util
+    package:
+      name:
+        - google-cloud-sdk
