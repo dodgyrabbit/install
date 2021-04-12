@@ -25,12 +25,22 @@
         - jq
         - snapd
         - ffmpeg
+        - apt-transport-https
+    state: latest
   - name: Install VS Code
     snap:
       name: code
       classic: true
-  - name: Install .Net 5.0
-    snap:
-      name: dotnet-sdk
-      classic: true
-      channel: "5.0"
+  - name: Download MS product repository
+    get_url:
+      url: 'https://packages.microsoft.com/config/ubuntu/{{ ansible_distribution_version }}/packages-microsoft-prod.deb'
+      dest: /tmp/packages-microsoft-prod.deb
+  - name: Install MS product repository
+      apt: deb=/tmp/packages-microsoft-prod.deb
+      become: true
+    - name: Install .NET Core SDK
+      apt:
+        name: dotnet-sdk-5.0
+        state: present
+        update_cache: yes
+      become: true
