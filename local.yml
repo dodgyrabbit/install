@@ -27,6 +27,7 @@
         - ffmpeg
         - apt-transport-https
         - kubectl
+        - tmux
   - name: add vs code repository
     apt_repository:
       repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
