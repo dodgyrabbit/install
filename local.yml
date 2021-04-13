@@ -1,4 +1,3 @@
----
 - hosts: localhost
   connection: local
   become: true
@@ -11,7 +10,7 @@
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
   tasks:
-  - name: install utilities
+  - name: Install utilities
     package:
       name:
         - htop
@@ -29,67 +28,85 @@
         - kubectl
         - tmux
         - python3-pip
-  - name: add vs code repository
+        - v4l2loopback-dkms
+        - gnome-tweaks
+
+  - name: Add Visual Studio Code repository
     apt_repository:
       repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
       state: present
       update_cache: true
-  - name: install vs code
+
+  - name: Install Visual Studio Code
     package:
       name:
         - code
-  - name: Download MS product repository
+
+  - name: Download Microsoft product repository install
     get_url:
       url: 'https://packages.microsoft.com/config/ubuntu/{{ ansible_distribution_version }}/packages-microsoft-prod.deb'
       dest: /tmp/packages-microsoft-prod.deb
-  - name: Install MS product repository
+
+  - name: Install Microsoft product repository
     apt: deb=/tmp/packages-microsoft-prod.deb
+
   - name: Install .NET Core SDK
     apt:
       name: dotnet-sdk-5.0
       state: present
       update_cache: true
-  - name: add google public Key
+
+  - name: Add google public Key
     apt_key:
       id: A040830F7FAC5991
       url: https://dl-ssl.google.com/linux/linux_signing_key.pub
       state: present
-  - name: add chrome repository
+
+  - name: Add chrome repository
     apt_repository:
       repo: "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main"
       state: present
       update_cache: true
-  - name: install chrome
+
+  - name: Install chrome
     apt:
       name: google-chrome-stable
       state: latest
       update_cache: true
       cache_valid_time: 3600
-  - name: add google cloud gpg key
+
+  - name: Add google cloud gpg key
     apt_key:
       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
       id: 7F92E05B31093BEF5A3C2D38FEEA9169307EA071
       keyring: /usr/share/keyrings/cloud.google.gpg
-      state: present      
-  - name: add gcloud repository
+      state: present
+
+  - name: Add gcloud repository
     apt_repository:
       repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
       state: present
       update_cache: true
-  - name: install google cloud util
+
+  - name: Install Google cloud util
     package:
       name:
         - google-cloud-sdk
-  - name: install insomnia
+
+  - name: Install insomnia
     snap:
       name: insomnia
-  - name: add ppa for obs studio
+
+  - name: Add ppa for obs studio
     apt_repository:
       repo: ppa:obsproject/obs-studio
       update_cache: true
-  - name: install obs studio
+
+  - name: Install obs studio
     package:
       name: obs-studio
+
+  # Peek does not have support for Ubuntu 20.10 yet
   - name: add ppa for peek
     apt_repository:
       repo: ppa:peek-developers/stable
@@ -99,6 +116,41 @@
     package:
       name: peek
     when: ansible_distribution_version != "20.10" and ansible_distribution == "Ubuntu"
-  
 
+  # Add a virtual video driver. This allows you to expose OBS output as a virtual camera
+  - name: load video for linux loopback driver on startup
+    copy:
+      dest: /etc/modules-load.d/v4l2loopback.conf
+      mode: u=rw,g=r,o=r
+      owner: root
+      content: |
+        v4l2loopback
 
+  - name: Configure video for Linux loopback driver
+    copy:
+      dest: /etc/modprobe.d/v4l2loopback.conf
+      mode: u=rw,g=r,o=r
+      owner: root
+      content: |
+        options v4l2loopback exclusive_caps=1
+        options v4l2loopback card_label=VirtualCam
+
+  - name: Install rider
+    snap:
+      name: rider
+      classic: true
+      channel: "latest/stable"
+
+  # As per the readme, add this to a file that is not the package name
+  - name: Increase Inotify Watches Limit
+    copy:
+      dest: /etc/sysctl.d/rider-inotify-increase.conf
+      mode: u=rw,g=r,o=r
+      owner: root
+      content: |
+        fs.inotify.max_user_watches = 524288
+
+  # This project seems to have come alive again. Use the snap package to install.
+  - name: Install shutter
+    snap:
+      name: shutter
