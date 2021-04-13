@@ -80,3 +80,25 @@
     package:
       name:
         - google-cloud-sdk
+  - name: install insomnia
+    snap:
+      name: insomnia
+  - name: add ppa for obs studio
+    apt_repository:
+      repo: ppa:obsproject/obs-studio
+      update_cache: true
+  - name: install obs studio
+    package:
+      name: obs-studio
+  - name: add ppa for peek
+    apt_repository:
+      repo: ppa:peek-developers/stable
+      update_cache: true
+    when: ansible_distribution_version != "20.10" and ansible_distribution == "Ubuntu"
+  - name: install peek
+    package:
+      name: peek
+    when: ansible_distribution_version != "20.10" and ansible_distribution == "Ubuntu"
+  
+
+
